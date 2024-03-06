@@ -33,6 +33,7 @@ app.get("/api/hello", function (req, res) {
 
 app.get("/api/:date?", function (req, res)  {
   const date = req.params.date;
+  const inputDate = isNaN(date) ? new Date(date) : new Date(parseInt(date));
 
   if (!date || date.trim() === "") {
     const currentTime = new Date();
@@ -41,10 +42,15 @@ app.get("/api/:date?", function (req, res)  {
         "utc": currentTime.toUTCString()
     });
 }
-  if(!isValidDate(date)) {
+  if(!isValidDate(inputDate)) {
     res.json({error: 'Invalid Date'})
   } else {
-    res.json({"unix": parseInt((new Date(date).getTime() / 1000).toFixed(0)), "utc": new Date(date).toUTCString()});
+    res.json({"unix": parseInt((new Date(inputDate).getTime() / 1000).toFixed(0)), "utc": new Date(inputDate).toUTCString()});
+
+  //   res.json({
+  //     "unix": parseInt((new Date(date).getTime() / 1000).toFixed(0)),
+  //     "utc": new Date(date).toUTCString()
+  // });
   }
 })
 
