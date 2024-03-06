@@ -33,26 +33,35 @@ app.get("/api/hello", function (req, res) {
 
 app.get("/api/:date?", function (req, res)  {
   const date = req.params.date;
-  const inputDate = isNaN(date) ? new Date(date) : new Date(parseInt(date));
-
+  
   if (!date || date.trim() === "") {
-    const currentTime = new Date();
-    res.json({
-        "unix": parseInt((currentTime.getTime() / 1000).toFixed(0)),
-        "utc": currentTime.toUTCString()
-    });
-}
-  if(!isValidDate(inputDate)) {
-    res.json({error: 'Invalid Date'})
+      const currentTime = new Date();
+      res.json({
+          "unix": currentTime.getTime(),
+          "utc": currentTime.toUTCString()
+      });
   } else {
-    res.json({"unix": parseInt((new Date(inputDate).getTime() / 1000).toFixed(0)), "utc": new Date(inputDate).toUTCString()});
+      let inputDate;
 
-  //   res.json({
-  //     "unix": parseInt((new Date(date).getTime() / 1000).toFixed(0)),
-  //     "utc": new Date(date).toUTCString()
-  // });
+      if (!isNaN(date)) {
+          // If the input is a valid Unix timestamp in milliseconds
+          inputDate = new Date(parseInt(date));
+      } else {
+          // If the input is a date string
+          inputDate = new Date(date);
+      }
+
+      if (!isValidDate(inputDate)) {
+          res.json({ error: 'Invalid Date' });
+      } else {
+          res.json({
+              "unix": inputDate.getTime(),
+              "utc": inputDate.toUTCString()
+          });
+      }
   }
-})
+});
+
 
 
 
